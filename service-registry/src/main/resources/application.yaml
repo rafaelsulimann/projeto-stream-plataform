@@ -1,0 +1,19 @@
+server:
+  port: 8761 
+
+spring:
+  application:
+    name: bottle-service-registry
+
+eureka:
+  client:
+    registerWithEureka: false 
+    fetchRegistry: false 
+    service-url:
+      defaultZone: 'http://${bottle.serviceRegistry.username}:${bottle.serviceRegistry.password}@${bottle.serviceRegistry.defaultZoneHost}:8761/eureka'
+
+bottle:
+  serviceRegistry:
+    username: ${SERVICE_REGISTRY_USERNAME:serviceregistry}
+    password: ${SERVICE_REGISTRY_PASSWORD:1234567}
+    defaultZoneHost: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE:localhost}

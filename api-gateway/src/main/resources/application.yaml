@@ -1,19 +1,19 @@
 spring:
   application:
-    name: bottle-authuser-service
+    name: bottle-api-gateway
   config:
     import: 'configserver:'
   cloud:
     config:
       discovery:
-        serviceId: ${bottle.configServer.serviceId}
-      username: ${bottle.configServer.username}
-      password: ${bottle.configServer.password}
-      uri: 'http://${bottle.configServer.username}:${bottle.configServer.password}@${bottle.configServer.host}:8888'
+        serviceId: ${bottle.configServer.serviceId} 
+      username: ${bottle.configServer.username} 
+      password: ${bottle.configServer.password} 
+      uri: 'http://${bottle.configServer.username}:${bottle.configServer.password}@${bottle.configServer.host}:8888' 
 
 bottle:
   configServer:
-    serviceId: ${SPRING_CLOUD_CONFIG_DISCOVERY_SERVICE_ID:bottle-config-server}
+    serviceId: ${SPRING_CLOUD_CONFIG_DISCOVERY_SERVICE_ID:config-server}
     username: ${CONFIG_SERVER_USERNAME:configserver}
     password: ${CONFIG_SERVER_PASSWORD:1234567}
     host: ${CONFIG_SERVER_HOST:localhost}
@@ -28,3 +28,4 @@ eureka:
       defaultZone: 'http://${bottle.serviceRegistry.username}:${bottle.serviceRegistry.password}@${bottle.serviceRegistry.defaultZoneHost}:8761/eureka'
   instance:
     hostname: ${bottle.serviceRegistry.defaultZoneHost}
+  

@@ -1,0 +1,30 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: bottle-config-server
+  cloud:
+    config:
+      server:
+        git:
+          uri: 'https://github.com/rafaelsulimann/bottle-config-server-repo'
+          default-label: main
+          username: rafaelsulimann
+          password: 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
+
+eureka:
+  client:
+    service-url:
+      defaultZone: 'http://${bottle.serviceRegistry.username}:${bottle.serviceRegistry.password}@${bottle.serviceRegistry.defaultZoneHost}:8761/eureka'
+  instance:
+    hostname: ${bottle.serviceRegistry.defaultZoneHost}
+
+bottle:  
+  serviceRegistry:
+    username: ${SERVICE_REGISTRY_USERNAME:serviceregistry}
+    password: ${SERVICE_REGISTRY_PASSWORD:1234567}
+    defaultZoneHost: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE:localhost}
+  configServer:
+    username: ${CONFIG_SERVER_USERNAME:configserver}
+    password: ${CONFIG_SERVER_PASSWORD:1234567}
