@@ -16,4 +16,4 @@ bottle:
   serviceRegistry:
     username: ${SERVICE_REGISTRY_USERNAME:serviceregistry}
     password: ${SERVICE_REGISTRY_PASSWORD:1234567}
-    defaultZoneHost: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE:localhost}
+    defaultZoneHost: ${EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE:host.docker.internal}

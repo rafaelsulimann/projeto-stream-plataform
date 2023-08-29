@@ -11,7 +11,7 @@ spring:
           uri: 'https://github.com/rafaelsulimann/bottle-config-server-repo'
           default-label: main
           username: rafaelsulimann
-          password: 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
+          password: ${bottle.configServer.repo-password}
 
 eureka:
   client:
@@ -28,3 +28,4 @@ bottle:
   configServer:
     username: ${CONFIG_SERVER_USERNAME:configserver}
     password: ${CONFIG_SERVER_PASSWORD:1234567}
+    repo-password: ${CONFIG_SERVER_REPO_PASSWORD:1234567}

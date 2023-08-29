@@ -1,0 +1,94 @@
+version: "3.7"
+services:
+  service-registry:
+    image: service-registry:v1
+    container_name: service-registry
+    restart: always
+    environment:
+      SERVICE_REGISTRY_USERNAME: serviceregistry
+      SERVICE_REGISTRY_PASSWORD: 1234567
+      EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: service-registry
+    ports:
+      - 8761:8761
+    networks:
+      - dev-network
+  config-server:
+    image: config-server:v1
+    container_name: config-server
+    restart: always
+    environment:
+      CONFIG_SERVER_USERNAME: configserver
+      CONFIG_SERVER_PASSWORD: 1234567
+      CONFIG_SERVER_HOST: config-server
+      CONFIG_SERVER_REPO_PASSWORD: 1234567
+      SERVICE_REGISTRY_USERNAME: serviceregistry
+      SERVICE_REGISTRY_PASSWORD: 1234567
+      EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: service-registry
+    ports:
+      - 8888:8888
+    depends_on:
+      - service-registry
+    networks:
+      - dev-network
+  api-gateway:
+    image: api-gateway:v1
+    container_name: api-gateway
+    restart: always
+    environment:
+      SPRING_CLOUD_CONFIG_DISCOVERY_SERVICE_ID: bottle-config-server
+      CONFIG_SERVER_USERNAME: configserver
+      CONFIG_SERVER_PASSWORD: 1234567
+      CONFIG_SERVER_HOST: config-server
+      SERVICE_REGISTRY_USERNAME: serviceregistry
+      SERVICE_REGISTRY_PASSWORD: 1234567
+      EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: service-registry
+    ports:
+      - 8080:8080
+    depends_on:
+      - service-registry
+      - config-server
+    networks:
+      - dev-network
+  authuser:
+    image: authuser:v1
+    container_name: authuser
+    restart: always
+    environment:
+      SPRING_CLOUD_CONFIG_DISCOVERY_SERVICE_ID: bottle-config-server
+      CONFIG_SERVER_USERNAME: configserver
+      CONFIG_SERVER_PASSWORD: 1234567
+      CONFIG_SERVER_HOST: config-server
+      SERVICE_REGISTRY_USERNAME: serviceregistry
+      SERVICE_REGISTRY_PASSWORD: 1234567
+      EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE: service-registry
+      MONGODB_NAME: mongodb
+      MONGODB_USERNAME: admin
+      MONGODB_PASSWORD: 123456
+      MONGODB_INITIAL_DB_NAME: bottle
+      MONGODB_PORT: 27017
+    ports:
+      - 8081:8081
+    depends_on:
+      - service-registry
+      - config-server
+      - mongodb
+    networks:
+      - dev-network
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: 123456
+      MONGO_INITDB_DATABASE: bottle
+    ports:
+      - 27017:27017
+    volumes:
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
+      - ../mongo-data:/data/db
+    networks:
+      - dev-network
+networks:
+  dev-network:
+    driver: bridge

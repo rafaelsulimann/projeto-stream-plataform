@@ -1,0 +1,22 @@
+FROM maven:3.8.4-openjdk-17-slim AS builder
+WORKDIR /app
+COPY . .
+RUN mvn clean package
+
+FROM openjdk:17-slim
+WORKDIR /app
+ENV SPRING_CLOUD_CONFIG_DISCOVERY_SERVICE_ID=bottle-config-server
+ENV CONFIG_SERVER_USERNAME=configserver
+ENV CONFIG_SERVER_PASSWORD=1234567
+ENV CONFIG_SERVER_HOST=host.docker.internal
+ENV SERVICE_REGISTRY_USERNAME=serviceregistry
+ENV SERVICE_REGISTRY_PASSWORD=1234567
+ENV EUREKA_CLIENT_SERVICE_URL_DEFAULT_ZONE=host.docker.internal
+ENV MONGODB_NAME=host.docker.internal
+ENV MONGODB_USERNAME=admin
+ENV MONGODB_PASSWORD=123456
+ENV MONGODB_INITIAL_DB_NAME=bottle
+ENV MONGODB_PORT=27017
+COPY --from=builder /app/target/authuser-0.0.1-SNAPSHOT.jar ./authuser.jar
+EXPOSE 8081
+ENTRYPOINT ["java", "-jar", "/app/authuser.jar"]
